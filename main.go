@@ -13,49 +13,6 @@ import (
 	"time"
 )
 
-/*
-Wait... If update fails, the server sends a register again... Oh.
-
-Pending (Before Github):
-- Refactor (Un-spaghetti the code)
-- Implement remaining methods (POST):
-	- /servers/server id/update (Pending, update contact... Refactor necessary)
-- Duplicate entry check (Same IP and port) (Act as update... Remove Softdelete and check if contact has changed)
-- Multi version support
-- Data validation
-	- Valid port (is integer and is valid range)
-	- Valid IP (does Golang have a way to verify this?)
-	- Value length limit
-	- Set max length or size, all requests in general
-- Basic rate limit (Time and IP based)
-- Reuse unused IDs
-- Fix edge scenarios:
-	- Possible concurrency issue when go routine "checkForInactiveServers" runs while processing a HTTP request
-
-Pending (Post Github):
-- Reverse Proxy compat (Nginx and others)
-- Unit Testing
-- Basic config
-	- IP and Port
-	- Max servers per IP
-	- Softdelete and delete times
-	- Reverse Proxy IP and header name (ip)
-- IP Banning
-- Memory - File (Save data on storage in case of crashes or host downtime)
-- Memory - Database
-	- MongoDB
-	- MySQL (?)
-	- PostgreSQL (Why not?)
-- Multi game support (At least srb2k and drrr)
-
-Note: Data validation is very important to avoid basic DoS or opening up vulnerabilities.
-
-Important notes:
-- Restart "lastUpdate" time when restarting MS
-- When fetching data from database, remember to make sure the integer is 64 bits
-- When (possibly) deleting multiples entries, remember to compensate lol
-*/
-
 var lastId int = 0
 var serverList []map[string]any
 
