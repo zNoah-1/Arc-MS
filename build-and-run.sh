@@ -1,2 +1,2 @@
-go build main.go
-./main
+go build -o bin/arc-ms cmd/main.go
+./bin/arc-ms

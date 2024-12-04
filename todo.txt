@@ -5,6 +5,7 @@ Pending priority 1:
 - Duplicate entry check (Same IP and port) (Act as update... Remove Softdelete and check if contact has changed)
 - Multi version support
 - Data validation
+	- Check if value is empty or null
 	- Valid port (is integer and is valid range)
 	- Valid IP (does Golang have a way to verify this?)
 	- Value length limit
