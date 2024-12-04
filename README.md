@@ -11,7 +11,7 @@ A (very) simple Ring Racers MS made in Golang.
 - IP banning
 
 ## 💻 Compile instructions
-Run the command "go build main.go" after installing Go.
+Run the command "go build -o bin/ cmd/main.go" after installing Go.
 
 ## 🔌 Run instructions
 ### Windows (Powershell)
