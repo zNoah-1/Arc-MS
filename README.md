@@ -21,4 +21,4 @@ Run the command "go build -o bin/ cmd/main.go" after installing Go.
 - You can run it "main -port=8080", change 8080 with the port you want to use.
 
 ## 🔭 Compatibility
-Go 1.23.3
+Go 1.23.2
