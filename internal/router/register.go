@@ -65,11 +65,7 @@ func register(w http.ResponseWriter, r *http.Request, serverList *[]map[string]a
 }
 
 func isContactLengthValid(contact string) bool {
-	if len(contact) < 1000 {
-		return true
-	}
-
-	return false
+	return len(contact) < 1000
 }
 
 func isPortValid(portString string) bool {
