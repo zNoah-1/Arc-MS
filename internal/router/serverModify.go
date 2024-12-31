@@ -18,45 +18,68 @@ func serverModify(w http.ResponseWriter, r *http.Request, serverList *[]map[stri
 	//fmt.Println("Received", html.EscapeString(r.Method), html.EscapeString(r.URL.Path))
 	printReceivedRequest(r, false)
 
-	path := strings.TrimPrefix(r.URL.Path, "/ms/api/servers/")
-	parts := strings.Split(path, "/")
+	pathList := pathList(r.URL.Path)
+	id, err := strconv.Atoi(pathList[0])
+	ipAddr := httputil.UserIpAddr(r)
 
-	if len(parts) == 2 {
-		id, err := strconv.Atoi(parts[0])
-		if err != nil {
-			http.Error(w, "Invalid ID", http.StatusBadRequest)
-			return
-		}
+	if err != nil {
+		http.Error(w, "Invalid ID", http.StatusBadRequest)
+		return
+	}
 
-		// Process with the ID
-		//fmt.Fprintf(w, "Server ID: %d\n", id)
+	//Get server
+	server, lastIndex := getServer(id, serverList)
 
-		ipAddr := httputil.UserIpAddr(r)
+	if server == nil {
+		http.Error(w, "Can't find server with this ID", http.StatusNotFound)
+		return
+	}
 
-		i := 0
-		for i < len(*serverList) {
-			serverData := (*serverList)[i]
+	if server["ip"] != ipAddr {
+		http.Error(w, "I'm sorry Dave, I'm afraid I can't do that", http.StatusForbidden)
+		return
+	}
 
-			if serverData["id"] == id {
-				if serverData["ip"] == ipAddr {
-					if parts[1] == "unlist" {
-						*serverList = append((*serverList)[:i], (*serverList)[i+1:]...)
-					} else if parts[1] == "update" {
-						serverData["lastUpdate"] = time.Now().Unix()
-						serverData["disabled"] = false
-					} else {
-						http.Error(w, "Not implemented", http.StatusNotFound)
-					}
-					return
-				}
-
-				http.Error(w, "You are not allowed to do that", http.StatusForbidden)
-				return
-			}
-			i++
-		}
-		http.Error(w, "Server Not Found", http.StatusInternalServerError)
-	} else {
+	switch requestType(pathList) {
+	case "unlist":
+		*serverList = append((*serverList)[:lastIndex], (*serverList)[lastIndex+1:]...)
+	case "update":
+		server["lastUpdate"] = time.Now().Unix()
+		server["disabled"] = false
+	default:
 		http.Error(w, "Not implemented", http.StatusNotFound)
 	}
+}
+
+func pathList(uri string) []string {
+	path := strings.TrimPrefix(uri, "/ms/api/servers/")
+	return strings.Split(path, "/")
+}
+
+func requestType(pathList []string) string {
+	if len(pathList) != 2 {
+		return "unknown"
+	}
+
+	switch subpath := pathList[1]; subpath {
+	case "unlist":
+		return "unlist"
+	case "update":
+		return "update"
+	default:
+		return "unknown"
+	}
+}
+
+func getServer(id int, serverList *[]map[string]any) (map[string]any, int) {
+	i := 0
+	for i < len(*serverList) {
+		server := (*serverList)[i]
+
+		if server["id"] == id {
+			return server, i
+		}
+		i++
+	}
+	return nil, -1
 }
