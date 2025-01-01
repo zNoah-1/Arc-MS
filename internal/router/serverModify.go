@@ -6,6 +6,7 @@ import (
 	"strings"
 	"time"
 
+	"github.com/zNoah-1/Arc-MS/internal/logger"
 	"github.com/zNoah-1/Arc-MS/internal/util/httputil"
 )
 
@@ -46,6 +47,13 @@ func serverModify(w http.ResponseWriter, r *http.Request, serverList *[]map[stri
 	case "update":
 		server["lastUpdate"] = time.Now().Unix()
 		server["disabled"] = false
+
+		switch updateContact(r, server) {
+		case "ioerror":
+			http.Error(w, "An error has ocurred", http.StatusInternalServerError)
+		case "toolong":
+			http.Error(w, "Server contact too long", http.StatusBadRequest)
+		}
 	default:
 		http.Error(w, "Not implemented", http.StatusNotFound)
 	}
@@ -82,4 +90,28 @@ func getServer(id int, serverList *[]map[string]any) (map[string]any, int) {
 		i++
 	}
 	return nil, -1
+}
+
+func hasData(bodyBytes []byte) bool {
+	return len(bodyBytes) != 0
+}
+
+func updateContact(r *http.Request, server map[string]any) string {
+	bodyBytes, err := httputil.BodyBytes(r)
+
+	if !hasData(bodyBytes) {
+		return "empty"
+	} else if err != nil {
+		return "ioerror"
+	}
+
+	contact := httputil.ResponseValue(bodyBytes, "contact")
+
+	if !isContactLengthValid(contact) {
+		logger.Warn("Someone sent a server contact too long (More than 1000 characters)")
+		return "toolong"
+	}
+
+	server["contact"] = contact
+	return ""
 }
