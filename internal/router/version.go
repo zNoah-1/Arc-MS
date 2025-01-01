@@ -13,5 +13,5 @@ func version(w http.ResponseWriter, r *http.Request) {
 	}
 	//fmt.Println("Received", html.EscapeString(r.Method), html.EscapeString(r.URL.Path))
 	printReceivedRequest(r, false)
-	fmt.Fprint(w, "4 v2.3\n")
+	fmt.Fprint(w, "10 v1.6\n")
 }

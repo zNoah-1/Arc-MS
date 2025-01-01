@@ -1,5 +1,5 @@
 # Arc-MS
-A (very) simple Ring Racers MS made in Golang. 
+A (very) simple ~~Ring Racers~~ SRB2Kart MS made in Golang. 
 
 ## ‼️ Missing Features
 - Multi version support
