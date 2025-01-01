@@ -48,7 +48,7 @@ func register(w http.ResponseWriter, r *http.Request, serverList *[]map[string]a
 	serverExist, serverInfo := serverExist(ip, port, serverList)
 
 	if serverExist { //Act as server update
-		serverUpdate(serverInfo, ip)
+		serverUpdate(serverInfo)
 		fmt.Fprintf(w, "%d", serverInfo["id"])
 		logger.Warn("There was an attempt of registering a server twice. This may happen if a server was killed or crashed and is trying to register again")
 		return
@@ -104,7 +104,7 @@ func serverExist(ip string, port string, serverList *[]map[string]any) (bool, ma
 	return false, nil
 }
 
-func serverUpdate(serverInfo map[string]any, ip string) {
+func serverUpdate(serverInfo map[string]any) {
 	serverInfo["disabled"] = false
 	serverInfo["lastUpdate"] = time.Now().Unix()
 }
