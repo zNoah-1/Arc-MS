@@ -16,6 +16,7 @@ func BodyBytes(r *http.Request) ([]byte, error) {
 	var bodyBytes []byte
 	var err error
 	bodyBytes, err = io.ReadAll(r.Body)
+	r.Body.Close()
 
 	if err == nil {
 		return bodyBytes, nil //All is super :)
