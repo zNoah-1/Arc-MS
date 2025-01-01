@@ -3,9 +3,7 @@ A (very) simple Ring Racers MS made in Golang.
 
 ## ‼️ Missing Features
 - Multi version support
-- Validation against duplicated entries
 - Server config (MS port, base url, etc.)
-- Server contact update
 - Data retention after app restart
 - Reverse proxy compatibility
 - IP banning
