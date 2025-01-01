@@ -10,12 +10,12 @@ import (
 func DefineEndpoints(serverList *[]map[string]any) {
 	//GET
 	http.HandleFunc("/ms/api/rules", rules)
-	http.HandleFunc("/ms/api/games/srb2kart/version", version)
-	http.HandleFunc("/ms/api/games/srb2kart/10/servers", func(w http.ResponseWriter, r *http.Request) { serverListing(w, r, serverList) })
+	http.HandleFunc("/ms/api/games/SRB2Kart/version", version)
+	http.HandleFunc("/ms/api/games/SRB2Kart/10/servers", func(w http.ResponseWriter, r *http.Request) { serverListing(w, r, serverList) })
 
 	//POST
 	http.HandleFunc("/ms/api/servers/", func(w http.ResponseWriter, r *http.Request) { serverModify(w, r, serverList) })
-	http.HandleFunc("/ms/api/games/srb2kart/10/servers/register", func(w http.ResponseWriter, r *http.Request) { register(w, r, serverList) })
+	http.HandleFunc("/ms/api/games/SRB2Kart/10/servers/register", func(w http.ResponseWriter, r *http.Request) { register(w, r, serverList) })
 
 	//ALL
 	http.HandleFunc("/", defaultRoute)
