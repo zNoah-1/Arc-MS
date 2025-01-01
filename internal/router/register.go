@@ -45,13 +45,22 @@ func register(w http.ResponseWriter, r *http.Request, serverList *[]map[string]a
 		return
 	}
 
+	serverExist, serverInfo := serverExist(ip, port, serverList)
+
+	if serverExist { //Act as server update
+		serverUpdate(serverInfo, ip)
+		fmt.Fprintf(w, "%d", serverInfo["id"])
+		logger.Warn("There was an attempt of registering a server twice. This may happen if a server was killed or crashed and is trying to register again")
+		return
+	}
+
 	if !isContactLengthValid(contact) {
 		http.Error(w, "Server contact too long", http.StatusBadRequest)
 		logger.Warn("Someone sent a server contact too long (More than 1000 characters)")
 		return
 	}
 
-	serverInfo := make(map[string]any)
+	serverInfo = make(map[string]any)
 	serverInfo["id"] = id
 	serverInfo["ip"] = ip
 	serverInfo["port"] = port
@@ -80,4 +89,22 @@ func isPortValid(portString string) bool {
 	}
 
 	return true
+}
+
+func serverExist(ip string, port string, serverList *[]map[string]any) (bool, map[string]any) {
+	i := 0
+	for i < len(*serverList) {
+		serverInfo := (*serverList)[i]
+
+		if serverInfo["ip"] == ip && serverInfo["port"] == port {
+			return true, serverInfo
+		}
+		i++
+	}
+	return false, nil
+}
+
+func serverUpdate(serverInfo map[string]any, ip string) {
+	serverInfo["disabled"] = false
+	serverInfo["lastUpdate"] = time.Now().Unix()
 }
